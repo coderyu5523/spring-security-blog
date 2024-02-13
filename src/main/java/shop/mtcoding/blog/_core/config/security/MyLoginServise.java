@@ -19,7 +19,6 @@ public class MyLoginServise implements UserDetailsService {
     // UserDetails 를 만들어서 리턴해주면 됨.
     @Override   //username 만 넘어감.
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername:"+username);
         User user = userRepository.findByUsername(username);
 
         if(user==null){
@@ -30,7 +29,7 @@ public class MyLoginServise implements UserDetailsService {
             session.setAttribute("sessionUser",user); // 머스태치용
             return new MyLoginUser(user) ;  // 리턴을 하는 이유는 세션에 저장하려고.
         }                               //세션에 넣기 직전에 getPassword 메서드를 호출함. 패스워드랑 유저 객체랑 비교해서 알아서 패스워드를 체크해줌
-                                        //세션에 저장되는게 아니라 SecurityContextHolder 에 저장
+        //세션에 저장되는게 아니라 SecurityContextHolder 에 저장
     } //ioc 컨테이너에 UserDetailsService가 뜸/
 
 }
