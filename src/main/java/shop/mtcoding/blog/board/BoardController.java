@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.board;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -113,13 +114,29 @@ public class BoardController {
 
         return "redirect:/";
     }
+    //localhost:8080 -> page = 0
+    //localhost:8080?pae=0
+    @GetMapping({"/"})
+    public String index(HttpServletRequest request,@RequestParam(value = "page",defaultValue = "0") Integer page) {
 
 
-    @GetMapping({"/", "/board"})
-    public String index(HttpServletRequest request) {
-
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardRepository.findAll(page);
         request.setAttribute("boardList", boardList);
+
+        //전체 페이지 개수
+        int count = boardRepository.count().intValue();
+        int namerge = (count%3 ==0?0:1);
+        int allPageCount = count/3 +namerge ;
+
+        //view에 던지는건 dto로 바꿔서 던짐. 엔티티는 안됨.
+
+        // 페이징의 핵심변수 4개
+        request.setAttribute("first",page==0);
+        request.setAttribute("last",allPageCount==page+1);
+        request.setAttribute("prev",page-1);
+        request.setAttribute("next",page+1);
+
+
 
         return "index";
     }
